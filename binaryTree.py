@@ -1,4 +1,5 @@
 class Node:
+    
     def __init__(self, key, val = None, left = None, right = None):
         self.key = key
         self.val = val
@@ -98,13 +99,44 @@ class TreeMap:
 
     def remove(self, key: int) -> None:
 
-        self.removal(self.root, key)
+        self.root = self.removal(self.root, key)
         
 
-    def removal(self, root, key):
+    def removal(self, root, key) -> Node:
+        if root == None:
+            return None
+        
+        if key > root.key:
+            root.right = self.removal(root.right, key)
+        elif key < root.key:
+            root.left = self.removal(root.left, key)
+        else:
+            if not root.left and not root.right:
+                return None
+            elif root.left and not root.right:
+                return root.left
+            elif not root.left and root.right:
+                return root.right
+            else:  
+                newNode = self.findMin(root.right)                                  
+                root.key = newNode.key
+                root.val = newNode.val
+                root.right = self.removal(root.right, newNode.key)
+        
+        return root
+                
+            
+    def findMin(self, root) -> Node:       
+        
+        curr = root
 
+        while curr.left:
+            curr = curr.left            
 
-    def getInorderKeys(self) -> List[int]:
+        return curr
+            
+
+    def getInorderKeys(self) -> list[int]:
         result = []
         self.inorderTraversal(self.root, result)
         return result
@@ -114,7 +146,10 @@ class TreeMap:
             return
         
         self.inorderTraversal(root.left, result)
-        result.append(root)
+        result.append(root.key)
         self.inorderTraversal(root.right, result)
 
-        return root
+
+
+
+
